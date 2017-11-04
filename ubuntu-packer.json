@@ -31,13 +31,14 @@
     "guest_os_type": "Ubuntu_64",
     "http_directory": "http",
     "iso_url": "iso/ubuntu.iso",
-    "iso_checksum": "649d3b5ec7306930f498c9ac3b74ec1d",
-    "iso_checksum_type": "md5",
+    "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+    "iso_checksum_type": "sha256",
     "vm_name": "{{ user `name` }}",
     "disk_size": "{{user `disk_size`}}",
     "headless": "{{user `headless`}}",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
+    "ssh_wait_timeout": "1800s",
     "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
@@ -64,7 +65,7 @@
     "cpus": "1",
     "disk_size": "8000",
     "headless": "false",
-    "memory": "256",
+    "memory": "512",
     "preseed_path": "preseed.cfg",
     "name": "ubuntu-16.04-amd64"
    }
