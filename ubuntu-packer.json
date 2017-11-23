@@ -1,7 +1,7 @@
 {
-  "builders": [{
-    "type": "virtualbox-iso",
-    "boot_command": [
+  "builders": [
+    {
+      "boot_command": [
         "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
         "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
         "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
@@ -27,46 +27,62 @@
         " -- <wait>",
         "<enter><wait>"
       ],
-    "boot_wait": "10s",    
-    "guest_os_type": "Ubuntu_64",
-    "http_directory": "http",
-    "iso_url": "iso/ubuntu.iso",
-    "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
-    "iso_checksum_type": "sha256",
-    "vm_name": "{{ user `name` }}",
-    "disk_size": "{{user `disk_size`}}",
-    "headless": "{{user `headless`}}",
-    "ssh_username": "vagrant",
-    "ssh_password": "vagrant",
-    "ssh_wait_timeout": "1800s",
-    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
-    "vboxmanage": [
-      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
-    ],
-    "output_directory": "build_op/packer-{{user `name`}}-virtualbox"
-  }],
+      "boot_wait": "10s",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "Ubuntu_64",
+      "headless": "{{user `headless`}}",
+      "http_directory": "http",
+      "iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
+      "iso_checksum_type": "sha256",
+      "iso_url": "iso/ubuntu.iso",
+      "output_directory": "build_op/packer-{{user `name`}}-virtualbox",
+      "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "1800s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ]
+      ],
+      "vm_name": "{{ user `name` }}"
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "build_op/{{user `name`}}.{{.Provider}}.box",
+      "type": "vagrant"
+    }
+  ],
   "provisioners": [
-   {
-    "type": "shell",
-    "execute_command": "echo 'Starting local provisioner'",
-    "script": "scripts/ubuntu/apt.sh"
-  },
-  {
-    "type": "shell",
-    "execute_command": "echo 'Cleaning up'",
-    "script": "scripts/ubuntu/cleanup.sh"
-  }],
- "post-processors": [{
-    "type": "vagrant",
-    "output": "build_op/{{user `name`}}.{{.Provider}}.box"
-  }],
+    {
+      "execute_command": "echo 'Starting local provisioner'",
+      "script": "scripts/ubuntu/apt.sh",
+      "type": "shell"
+    },
+    {
+      "execute_command": "echo 'Cleaning up'",
+      "script": "scripts/ubuntu/cleanup.sh",
+      "type": "shell"
+    }
+  ],
   "variables": {
     "cpus": "1",
     "disk_size": "8000",
     "headless": "false",
     "memory": "512",
-    "preseed_path": "preseed.cfg",
-    "name": "ubuntu-16.04-amd64"
-   }
+    "name": "ubuntu-16.04-amd64",
+    "preseed_path": "preseed.cfg"
+  }
 }
+
